@@ -1,0 +1,24 @@
+#!/bin/bash
+
+if [ ! -f "./symbolicatecrash" ]; then
+  echo "symbolicatecrash file does not exist in the current directory"
+  exit 1
+fi
+
+if [ $# -ne 1 ]; then
+  echo "Usage: $0 <archive_dir>"
+  exit 1
+fi
+
+archive_dir=$1
+
+export DEVELOPER_DIR="/Applications/Xcode-16.2.0.app/Contents/Developer"
+
+for file in *.ips; do
+  if [ -f "$file" ]; then
+    echo "Found IPS file: $file"
+    output_file="${file%.ips}.crash"
+    swift convertFromJSON.swift -i "$file" -o "$output_file"
+    ./symbolicatecrash --output "${output_file%.crash}.log" "$output_file" "$archive_dir/dSYMs/WidgetOn.app.dSYM"
+  fi
+done

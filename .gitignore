@@ -1,2 +1,9 @@
 *.dSYM
 *.crash
+
+*.ips
+*.log
+
+*.xcarchive/
+
+symbolicatecrash
